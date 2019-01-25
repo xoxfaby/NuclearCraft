@@ -16,6 +16,7 @@ public class ModCheck {
 	private static boolean gregtechLoaded = false;
 	private static boolean openComputersLoaded = false;
 	private static boolean galacticraftLoaded = false;
+	private static boolean commonCapabilitiesLoaded = false;
 	
 	public static void init() {
 		if (initialized) return;
@@ -30,6 +31,7 @@ public class ModCheck {
 		gregtechLoaded = Loader.isModLoaded("gregtech") || Loader.isModLoaded("GregTech Community Edition");
 		openComputersLoaded = Loader.isModLoaded("OpenComputers") || Loader.isModLoaded("opencomputers");
 		galacticraftLoaded = Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("galacticraftcore") || Loader.isModLoaded("Galacticraft Core");
+		commonCapabilitiesLoaded = Loader.isModLoaded("commoncapabilities") || Loader.isModLoaded("CommonCapabilities");
 		
 		initialized = true;
 	}
@@ -73,4 +75,10 @@ public class ModCheck {
 	public static boolean galacticraftLoaded() {
 		return galacticraftLoaded;
 	}
+
+	public static boolean commonCapabilitiesLoaded() {
+		return commonCapabilitiesLoaded;
+	}
+
+
 }

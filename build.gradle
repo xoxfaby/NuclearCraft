@@ -42,6 +42,11 @@ repositories {
         name = "CoFH Maven"
         url = "http://maven.covers1624.net"
     }
+	maven {
+		// CommonCapabilities
+		name "Cyclops Repo"
+		url "https://oss.jfrog.org/artifactory/simple/libs-release/"
+	}
 }
 
 version = "${mod_version}--${mc_version}"
@@ -75,6 +80,7 @@ dependencies {
 	compile group: "li.cil.oc", name: "OpenComputers", version: "${oc_version}"
 	compileOnly "gregtechce:gregtech:${gregtech_version}"
 	compileOnly "mekanism:Mekanism:${mekanism_version}"
+	compileOnly "org.cyclops.commoncapabilities:CommonCapabilities:${mc_version}-${common_capabilities_version}"
 }
 
 processResources {

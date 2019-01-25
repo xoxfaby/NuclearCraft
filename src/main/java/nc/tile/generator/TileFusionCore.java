@@ -13,6 +13,7 @@ import nc.config.NCConfig;
 import nc.enumm.MetaEnums.CoolerType;
 import nc.handler.SoundHandler;
 import nc.init.NCBlocks;
+import nc.ModCheck;
 import nc.network.tile.FusionUpdatePacket;
 import nc.recipe.NCRecipes;
 import nc.recipe.ProcessorRecipe;
@@ -20,12 +21,16 @@ import nc.tile.IGui;
 import nc.tile.fluid.TileActiveCooler;
 import nc.tile.internal.energy.EnergyConnection;
 import nc.tile.internal.fluid.Tank;
+import nc.tile.internal.heat.TemperatureWrapper;
 import nc.util.BlockFinder;
 import nc.util.BlockPosHelper;
 import nc.util.EnergyHelper;
 import nc.util.Lang;
 import nc.util.MaterialHelper;
 import nc.util.RecipeHelper;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import org.cyclops.commoncapabilities.api.capability.temperature.ITemperature;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -66,10 +71,12 @@ public class TileFusionCore extends TileFluidGenerator implements IGui<FusionUpd
 	public int structureCount = 0;
 	
 	private BlockFinder finder;
+	private TemperatureWrapper tempWrapper;
 	
 	public TileFusionCore() {
 		super("Fusion Core", 2, 4, 0, defaultTankCapacities(32000, 2, 4), defaultTankSorptions(2, 4), RecipeHelper.validFluids(NCRecipes.Type.FUSION), maxPower(), NCRecipes.Type.FUSION);
 		setTanksShared(false);
+		tempWrapper = new TemperatureWrapper(this);
 	}
 	
 	private static int maxPower() {
@@ -515,6 +522,36 @@ public class TileFusionCore extends TileFluidGenerator implements IGui<FusionUpd
 		hasConsumed = message.hasConsumed;
 		computerActivated = message.computerActivated;
 		problem = message.problem;
+	}
+	
+	// CommonCapabilities
+	
+	@CapabilityInject(ITemperature.class)
+	public static Capability<ITemperature> TEMP_CAPABILITY = null;
+
+
+	public TemperatureWrapper getTempWrapper() {
+		return tempWrapper;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (ModCheck.commonCapabilitiesLoaded()) {
+			if (capability == TEMP_CAPABILITY) {
+				return true;
+			}
+		}
+		return super.hasCapability(capability, facing);
+	}
+	
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (ModCheck.commonCapabilitiesLoaded()) {
+			if (capability == TEMP_CAPABILITY) {
+				return (T) getTempWrapper();
+			}
+		}
+		return super.getCapability(capability, facing);
 	}
 	
 	// OpenComputers
